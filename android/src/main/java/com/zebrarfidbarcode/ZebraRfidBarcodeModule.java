@@ -27,21 +27,13 @@ public class ZebraRfidBarcodeModule extends ReactContextBaseJavaModule implement
   public static final String NAME = "ZebraRfidBarcode";
   private RFIDReaderInterface rfidInterface;
   private BarcodeScannerInterface scannerInterface;
-  private List<DCSScannerInfo> availableScannerList;
   private final String ON_DEVICE_CONNECTED = "onZebraConnected";
   private final String ON_RFID = "onZebraRFIDReaded";
   private final String ON_BARCODE = "onZebraBarcodeScanned";
 
   public ZebraRfidBarcodeModule(ReactApplicationContext reactContext) {
     super(reactContext);
-    configureDevice();
-  }
-
-  private void configureDevice() {
-    if (scannerInterface == null) {
-      scannerInterface = new BarcodeScannerInterface(this);
-    }
-    availableScannerList = scannerInterface.getAvailableScanners(getReactApplicationContext());
+    scannerInterface = new BarcodeScannerInterface(this);
   }
 
   private void configureScanner(int scannerID, String scannerName) {
@@ -62,6 +54,7 @@ public class ZebraRfidBarcodeModule extends ReactContextBaseJavaModule implement
   @ReactMethod
   public void getAllDevices(Promise promise) {
     try {
+      List<DCSScannerInfo> availableScannerList = scannerInterface.getAvailableScanners(getReactApplicationContext());
       WritableArray listDevices = Arguments.createArray();
       for (DCSScannerInfo scannerInfo : availableScannerList) {
         listDevices.pushString(scannerInfo.getScannerName());
@@ -74,11 +67,7 @@ public class ZebraRfidBarcodeModule extends ReactContextBaseJavaModule implement
 
   @ReactMethod
   public void connectToDevice(String deviceName) {
-    if (scannerInterface == null) {
-      scannerInterface = new BarcodeScannerInterface(this);
-      availableScannerList = scannerInterface.getAvailableScanners(getReactApplicationContext());
-    }
-
+    List<DCSScannerInfo> availableScannerList = scannerInterface.getAvailableScanners(getReactApplicationContext());
     for (int i = 0; i < availableScannerList.size(); i++) {
       DCSScannerInfo scanner = availableScannerList.get(i);
       if (scanner.getScannerName().equals(deviceName)) {
