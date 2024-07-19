@@ -36,21 +36,13 @@ public class ZebraRfidBarcodeModule extends ReactContextBaseJavaModule implement
   public ZebraRfidBarcodeModule(ReactApplicationContext reactContext) {
     super(reactContext);
     scannerInterface = new BarcodeScannerInterface(this);
+    rfidInterface = new RFIDReaderInterface(this);
   }
 
   private void configureScanner(int scannerID, String scannerName) {
-    Thread thread = new Thread(() -> {
-      scannerInterface.connectToScanner(scannerID);
-      configureRFID(scannerName);
-      sendConnectStatus(true);
-    });
-    thread.start();
-  }
-
-  private void configureRFID(String name) {
-    if (rfidInterface == null)
-      rfidInterface = new RFIDReaderInterface(this);
-    rfidInterface.connect(getReactApplicationContext(), name);
+    scannerInterface.connectToScanner(scannerID);
+    rfidInterface.connect(getReactApplicationContext(), scannerName);
+    sendConnectStatus(true);
   }
 
   @ReactMethod
