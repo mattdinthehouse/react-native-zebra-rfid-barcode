@@ -133,6 +133,7 @@ public class RFIDReaderInterface implements RfidEventsListener {
     Log.d(TAG, "Status Notification: " + rfidStatusEvents.StatusEventData.getStatusEventType());
     if (rfidStatusEvents.StatusEventData.getStatusEventType() == STATUS_EVENT_TYPE.HANDHELD_TRIGGER_EVENT) {
       if (rfidStatusEvents.StatusEventData.HandheldTriggerEventData.getHandheldEvent() == HANDHELD_TRIGGER_EVENT_TYPE.HANDHELD_TRIGGER_PRESSED) {
+        listener.onTriggerPressed();
         new AsyncTask<Void, Void, Void>() {
           @Override
           protected Void doInBackground(Void... voids) {
@@ -146,6 +147,7 @@ public class RFIDReaderInterface implements RfidEventsListener {
         }.execute();
       }
       if (rfidStatusEvents.StatusEventData.HandheldTriggerEventData.getHandheldEvent() == HANDHELD_TRIGGER_EVENT_TYPE.HANDHELD_TRIGGER_RELEASED) {
+        listener.onTriggerReleased();
         new AsyncTask<Void, Void, Void>() {
           @Override
           protected Void doInBackground(Void... voids) {

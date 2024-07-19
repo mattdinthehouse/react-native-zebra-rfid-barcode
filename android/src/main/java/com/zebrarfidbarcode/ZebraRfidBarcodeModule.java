@@ -30,6 +30,8 @@ public class ZebraRfidBarcodeModule extends ReactContextBaseJavaModule implement
   private final String ON_DEVICE_CONNECTED = "onZebraConnected";
   private final String ON_RFID = "onZebraRFIDReaded";
   private final String ON_BARCODE = "onZebraBarcodeScanned";
+  private final String ON_TRIGGER_PRESSED = "onZebraTriggerPressed";
+  private final String ON_TRIGGER_RELEASED = "onZebraTriggerReleased";
 
   public ZebraRfidBarcodeModule(ReactApplicationContext reactContext) {
     super(reactContext);
@@ -111,6 +113,16 @@ public class ZebraRfidBarcodeModule extends ReactContextBaseJavaModule implement
   @Override
   public void onBarcodeScanned(String barcode) {
     sendBarcode(barcode);
+  }
+
+  @Override
+  public void onTriggerPressed() {
+    sendEvent(getReactApplicationContext(), ON_TRIGGER_PRESSED, null);
+  }
+
+  @Override
+  public void onTriggerReleased() {
+    sendEvent(getReactApplicationContext(), ON_TRIGGER_RELEASED, null);
   }
 
   @Override
