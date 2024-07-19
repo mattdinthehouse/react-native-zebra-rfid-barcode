@@ -4,4 +4,6 @@ import java.util.ArrayList;
 
 public interface IRFIDReaderListener {
     void onRFIDRead(ArrayList<String> listRfid);
+    void onTriggerPressed();
+    void onTriggerReleased();
 }
