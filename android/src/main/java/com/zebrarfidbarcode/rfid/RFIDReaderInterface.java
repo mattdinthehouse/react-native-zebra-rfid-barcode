@@ -81,11 +81,26 @@ public class RFIDReaderInterface implements RfidEventsListener {
         reader.Events.setHandheldEvent(true);
         // tag event with tag data
         reader.Events.setTagReadEvent(true);
-        // application will collect tag using getReadTags API
         reader.Events.setAttachTagDataWithReadEvent(false);
         // set start and stop triggers
         reader.Config.setStartTrigger(triggerInfo.StartTrigger);
         reader.Config.setStopTrigger(triggerInfo.StopTrigger);
+        // power levels are index based so maximum power supported get the last one
+        MAX_POWER = reader.ReaderCapabilities.getTransmitPowerLevelValues().length - 1;
+        // set antenna configurations
+        Antennas.AntennaRfConfig config = reader.Config.Antennas.getAntennaRfConfig(1);
+        config.setTransmitPowerIndex(MAX_POWER);
+        config.setrfModeTableIndex(0);
+        config.setTari(0);
+        reader.Config.Antennas.setAntennaRfConfig(1, config);
+        // Set the singulation control
+        Antennas.SingulationControl s1_singulationControl = reader.Config.Antennas.getSingulationControl(1);
+        s1_singulationControl.setSession(SESSION.SESSION_S0);
+        s1_singulationControl.Action.setInventoryState(INVENTORY_STATE.INVENTORY_STATE_A);
+        s1_singulationControl.Action.setSLFlag(SL_FLAG.SL_ALL);
+        reader.Config.Antennas.setSingulationControl(1, s1_singulationControl);
+        // delete any prefilters
+        reader.Actions.PreFilters.deleteAll();
       } catch (InvalidUsageException | OperationFailureException e) {
         e.printStackTrace();
       }
@@ -94,13 +109,10 @@ public class RFIDReaderInterface implements RfidEventsListener {
 
   @Override
   public void eventReadNotify(RfidReadEvents rfidReadEvents) {
-    // Each access belong to a tag.
-    // Therefore, as we are performing an access sequence on 3 Memory Banks, each tag could be reported 3 times
-    // Each tag data represents a memory bank
-    TagDataArray readTags = reader.Actions.getReadTagsEx(100);
+    TagData[] readTags = reader.Actions.getReadTags(100);
     if (readTags != null) {
       ArrayList<String> listTags = new ArrayList<>();
-      for (TagData myTag : readTags.getTags()) {
+      for (TagData myTag : readTags) {
         String tagID = myTag.getTagID();
 
         if (tagID != null) {
@@ -142,13 +154,6 @@ public class RFIDReaderInterface implements RfidEventsListener {
         }.execute();
       }
     }
-  }
-
-  private String getMemBankData(String memoryBankData, ACCESS_OPERATION_STATUS opStatus) {
-    return (opStatus != ACCESS_OPERATION_STATUS.ACCESS_SUCCESS) ?
-      opStatus.toString()
-      :
-      memoryBankData;
   }
 
   public void onDestroy() {

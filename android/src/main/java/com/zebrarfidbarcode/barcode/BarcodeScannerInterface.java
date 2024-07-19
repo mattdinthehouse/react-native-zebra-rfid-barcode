@@ -22,22 +22,24 @@ public class BarcodeScannerInterface implements IDcsSdkApiDelegate {
     public ArrayList<DCSScannerInfo> getAvailableScanners(Context context) {
         if (sdkHandler == null) {
             sdkHandler = new SDKHandler(context);
+
+            sdkHandler.dcssdkSetOperationalMode(DCSSDKDefs.DCSSDK_MODE.DCSSDK_OPMODE_USB_CDC);
+            sdkHandler.dcssdkSetOperationalMode(DCSSDKDefs.DCSSDK_MODE.DCSSDK_OPMODE_BT_LE);
+            sdkHandler.dcssdkSetOperationalMode(DCSSDKDefs.DCSSDK_MODE.DCSSDK_OPMODE_BT_NORMAL);
+
+            sdkHandler.dcssdkSetDelegate(this);
+
+            int notificationsMask = 0;
+            // Available/not-available events:
+            notificationsMask |= DCSSDKDefs.DCSSDK_EVENT.DCSSDK_EVENT_SCANNER_APPEARANCE.value;
+            notificationsMask |= DCSSDKDefs.DCSSDK_EVENT.DCSSDK_EVENT_SCANNER_DISAPPEARANCE.value;
+            // Scanner connection events:
+            notificationsMask |= DCSSDKDefs.DCSSDK_EVENT.DCSSDK_EVENT_SESSION_ESTABLISHMENT.value;
+            notificationsMask |= DCSSDKDefs.DCSSDK_EVENT.DCSSDK_EVENT_SESSION_TERMINATION.value;
+            notificationsMask |= DCSSDKDefs.DCSSDK_EVENT.DCSSDK_EVENT_BARCODE.value;
+
+            sdkHandler.dcssdkSubsribeForEvents(notificationsMask);
         }
-
-        sdkHandler.dcssdkSetOperationalMode(DCSSDKDefs.DCSSDK_MODE.DCSSDK_OPMODE_BT_NORMAL);
-        sdkHandler.dcssdkSetOperationalMode(DCSSDKDefs.DCSSDK_MODE.DCSSDK_OPMODE_USB_CDC);
-
-        sdkHandler.dcssdkSetDelegate(this);
-        int notificationsMask = 0;
-        notificationsMask |= DCSSDKDefs.DCSSDK_EVENT.DCSSDK_EVENT_SCANNER_APPEARANCE.value;
-        notificationsMask |= DCSSDKDefs.DCSSDK_EVENT.DCSSDK_EVENT_SCANNER_DISAPPEARANCE.value;
-        notificationsMask |= DCSSDKDefs.DCSSDK_EVENT.DCSSDK_EVENT_SESSION_ESTABLISHMENT.value;
-        notificationsMask |= DCSSDKDefs.DCSSDK_EVENT.DCSSDK_EVENT_SESSION_TERMINATION.value;
-        notificationsMask |= DCSSDKDefs.DCSSDK_EVENT.DCSSDK_EVENT_BARCODE.value;
-
-        // Subscribe to events set in notification mask
-        sdkHandler.dcssdkSubsribeForEvents(notificationsMask);
-        sdkHandler.dcssdkEnableAvailableScannersDetection(true);
 
         scannerInfoList.clear();
         sdkHandler.dcssdkGetAvailableScannersList(scannerInfoList);
