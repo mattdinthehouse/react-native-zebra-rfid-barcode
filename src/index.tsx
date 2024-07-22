@@ -25,6 +25,10 @@ export const connectToDevice = (deviceName: string) => {
   return ZebraRfidBarcode.connectToDevice(deviceName);
 };
 
+export const setRfidPowerLevel = (level: "max" | "half" | "min") => {
+  return ZebraRfidBarcode.setRfidPowerLevel(level);
+};
+
 export interface ZebraResultPayload {
   data: string;
 }

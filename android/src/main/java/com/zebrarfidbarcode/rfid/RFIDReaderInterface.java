@@ -74,6 +74,32 @@ public class RFIDReaderInterface implements RfidEventsListener {
     }
   }
 
+  public void setPowerLevel(String level) {
+    if(reader != null && reader.isConnected()) {
+      try {
+        // get power level
+        int[] txPowerLevels = reader.ReaderCapabilities.getTransmitPowerLevelValues();
+        int txPowerLevelIndex = txPowerLevels.length - 1;
+        switch(level) {
+          case "half":
+            txPowerLevelIndex = txPowerLevels.length / 2;
+            break;
+          case "min":
+            txPowerLevelIndex = 1;
+            break;
+        }
+        // set antenna configurations
+        Antennas.AntennaRfConfig config = reader.Config.Antennas.getAntennaRfConfig(1);
+        config.setTransmitPowerIndex(txPowerLevelIndex);
+        config.setrfModeTableIndex(0);
+        config.setTari(0);
+        reader.Config.Antennas.setAntennaRfConfig(1, config);
+      } catch (InvalidUsageException | OperationFailureException e) {
+        e.printStackTrace();
+      }
+    }
+  }
+
   private void configureReader() {
     if (reader.isConnected()) {
       TriggerInfo triggerInfo = new TriggerInfo();
@@ -90,14 +116,8 @@ public class RFIDReaderInterface implements RfidEventsListener {
         // set start and stop triggers
         reader.Config.setStartTrigger(triggerInfo.StartTrigger);
         reader.Config.setStopTrigger(triggerInfo.StopTrigger);
-        // power levels are index based so maximum power supported get the last one
-        MAX_POWER = reader.ReaderCapabilities.getTransmitPowerLevelValues().length - 1;
         // set antenna configurations
-        Antennas.AntennaRfConfig config = reader.Config.Antennas.getAntennaRfConfig(1);
-        config.setTransmitPowerIndex(MAX_POWER);
-        config.setrfModeTableIndex(0);
-        config.setTari(0);
-        reader.Config.Antennas.setAntennaRfConfig(1, config);
+        setPowerLevel("half");
         // Set the singulation control
         Antennas.SingulationControl s1_singulationControl = reader.Config.Antennas.getSingulationControl(1);
         s1_singulationControl.setSession(SESSION.SESSION_S0);

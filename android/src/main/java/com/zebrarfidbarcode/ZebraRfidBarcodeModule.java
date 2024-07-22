@@ -71,6 +71,11 @@ public class ZebraRfidBarcodeModule extends ReactContextBaseJavaModule implement
   }
 
   @ReactMethod
+  public void setRfidPowerLevel(String level) {
+    rfidInterface.setPowerLevel(level);
+  }
+
+  @ReactMethod
   public void sendConnectStatus(boolean isConnected) {
     WritableMap params = Arguments.createMap();
     params.putString("data", isConnected ? "Connect successfully" : "Connect failed");
