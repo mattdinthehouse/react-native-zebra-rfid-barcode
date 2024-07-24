@@ -79,6 +79,9 @@ android {
 repositories {
   mavenCentral()
   google()
+  maven {
+    url "$projectDir/maven"
+  }
 }
 
 
@@ -88,6 +91,11 @@ dependencies {
   //noinspection GradleDynamicVersion
   implementation "com.facebook.react:react-native:+"
 
-  implementation fileTree(dir: './libs', include: ['*.aar', '*.jar'], exclude: [])
+  implementation 'com.zebra:API3_ASCII:v2.0.2.125@aar'
+  implementation 'com.zebra:API3_CMN:v2.0.2.125@aar'
+  implementation 'com.zebra:API3_INTERFACE:v2.0.2.125@aar'
+  implementation 'com.zebra:API3_READER:v2.0.2.125@aar'
+  implementation 'com.zebra:API3_TRANSPORT:v2.0.2.125@aar'
+  implementation 'com.zebra:BarcodeScannerLibrary:v2.6.9.3@aar'
 }
 
