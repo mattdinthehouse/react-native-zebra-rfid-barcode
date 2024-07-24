@@ -91,11 +91,11 @@ dependencies {
   //noinspection GradleDynamicVersion
   implementation "com.facebook.react:react-native:+"
 
-  implementation 'com.zebra:api3_ascii:v2.0.2.125@aar'
-  implementation 'com.zebra:api3_cmn:v2.0.2.125@aar'
-  implementation 'com.zebra:api3_interface:v2.0.2.125@aar'
-  implementation 'com.zebra:api3_reader:v2.0.2.125@aar'
-  implementation 'com.zebra:api3_transport:v2.0.2.125@aar'
-  implementation 'com.zebra:barcodescannerlibrary:v2.6.9.3@aar'
+  implementation 'com.zebra:api3_ascii:2.0.2.125@aar'
+  implementation 'com.zebra:api3_cmn:2.0.2.125@aar'
+  implementation 'com.zebra:api3_interface:2.0.2.125@aar'
+  implementation 'com.zebra:api3_reader:2.0.2.125@aar'
+  implementation 'com.zebra:api3_transport:2.0.2.125@aar'
+  implementation 'com.zebra:barcodescannerlibrary:2.6.9.3@aar'
 }
 
